@@ -2,22 +2,47 @@ import 'package:flutter/material.dart';
 import '../utils/ajax.dart';
 
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String text = '暂无数据';
+
   @override
   Widget build(BuildContext context) {
-    getHttp();
-    return Scaffold(
-      body: Center(
-        child: Text('HomePage1'),
+    return Container(
+      child: Scaffold(
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              RaisedButton(
+                child: Text('获取数据'),
+                onPressed: (){
+                  getRes();
+                },
+              ),
+              Text(text)
+            ],
+          ),
+        ),
       ),
     );
   }
-  void getHttp() async {
-    try {
-      var res = await Http.getInstance().get('/5c60131a4bed3a6342711498/baixing/dabaojian', queryParameters: {'name': '王一扬'});
-      print(res);
-    } catch (e) {
-      print(e);
-    }
+
+  void getRes() {
+    getHttp().then((v){
+      setState(() {
+       text = v['data'].toString(); 
+      });
+    });
+  }
+
+  Future getHttp() async {
+    var res = await Http.getInstance().post('https://time.geekbang.org/serv/v1/column/newAll');
+    print(res);
+    return res;
   }
 }

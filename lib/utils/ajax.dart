@@ -21,7 +21,19 @@ class Http {
         connectTimeout: 10000,
         receiveTimeout: 10000,
         contentType: ContentType.parse("application/x-www-form-urlencoded"),
-        headers: {});
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+          'Connection': 'keep-alive',
+          'Content-Type': 'application/json',
+          'Cookie': '_ga=GA1.2.287892873.1551665198; _gid=GA1.2.1340814116.1551665198; _gat=1; Hm_lvt_022f847c4e3acd44d4a2481d9187f1e6=1551665198; SERVERID=1fa1f330efedec1559b3abbcb6e30f50|1551665192|1551665182; Hm_lpvt_022f847c4e3acd44d4a2481d9187f1e6=1551665207',
+          'Host': 'time.geekbang.org',
+          'Origin': 'https://time.geekbang.org',
+          'Referer': 'https://time.geekbang.org/',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36',
+        }
+    );
 
     _dio = new Dio(_options);
 
