@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -24,12 +25,20 @@ class _HomePageState extends State<HomePage> {
             List<Map> swiperlist = (res['data']['slides'] as List).cast();
             List<Map> navigatorList = (res['data']['category'] as List).cast();
             String adPic = res['data']['advertesPicture']['PICTURE_ADDRESS'];
-            return Column(
-              children: <Widget>[
-                SwiperCons(swiperItem: swiperlist),
-                TopNavigator(navigatorList: navigatorList,),
-                AdBanner(adPic:adPic)
-              ],
+            String leaderImg = res['data']['shopInfo']['leaderImage'];
+            String leaderPhone = res['data']['shopInfo']['leaderPhone'];
+            List<Map> recomandList = (res['data']['recommend'] as List).cast();
+
+            return SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  SwiperCons(swiperItem: swiperlist),
+                  TopNavigator(navigatorList: navigatorList,),
+                  AdBanner(adPic:adPic),
+                  LeaderPhone(leaderImg: leaderImg, leaderPhone: leaderPhone,),
+                  Recomand(recomandList: recomandList,)
+                ],
+              ),
             );
           } else {
             return Center(
@@ -110,6 +119,114 @@ class AdBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Image.network(adPic),
+    );
+  }
+}
+
+// 点击拨打电话
+class LeaderPhone extends StatelessWidget {
+  final String leaderImg; //店长图片
+  final String leaderPhone; //店长图片
+
+  LeaderPhone({Key key, this.leaderImg, this.leaderPhone}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: InkWell(
+        onTap: (){
+          _launcherURL();
+        },
+        child: Image.network(leaderImg),
+      ),
+    );
+  }
+  void _launcherURL() async {
+    String url = 'tel:' + leaderPhone;
+    if(await canLaunch(url)) {
+      await launch(url);
+    }else {
+      throw '链接解析错误！！！';
+    }
+  }
+}
+
+// 商品推荐
+
+class Recomand extends StatelessWidget {
+  final List recomandList;
+  Recomand({Key key, this.recomandList}) : super(key: key);
+  //头部标题
+  Widget _titWidget() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.fromLTRB(10, 2, 0, 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(width: .5, color: Colors.black12,)
+        )
+      ),
+      child: Text('商品推荐', style: TextStyle(color: Colors.pink),),
+    );
+  }
+
+  //商品单独项
+  Widget _item(index) {
+    return InkWell(
+      onTap: (){},
+      child: Container(
+        height: ScreenUtil().setHeight(330),
+        width: ScreenUtil().setWidth(250),
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            left: BorderSide(width: .5, color: Colors.black12)
+          )
+        ),
+        child: Column(
+          children: <Widget>[
+            Image.network(recomandList[index]['image']),
+            Text('￥${recomandList[index]['mallPrice']}'),
+            Text(
+              '￥${recomandList[index]['price']}',
+              style: TextStyle(
+                decoration: TextDecoration.lineThrough,
+                color:  Colors.grey,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //横向列表
+  Widget _recomandList() {
+    return Container(
+      height: ScreenUtil().setHeight(330),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: recomandList.length,
+        itemBuilder: (context, index){
+          return _item(index);
+        },
+      ),
+    );
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: ScreenUtil().setHeight(380),
+      margin: EdgeInsets.only(top: 10),
+      child: Column(
+        children: <Widget>[
+          _titWidget(),
+          _recomandList()
+        ],
+      ),
     );
   }
 }
