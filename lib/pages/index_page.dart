@@ -31,7 +31,7 @@ class _IndexPageState extends State<IndexPage> {
       title: Text("个人中心")
     )
   ];
-  final List tabBodies = [
+  final List<Widget> tabBodies = [
     HomePage(),
     CategoryPage(),
     CartPage(),
@@ -50,8 +50,8 @@ class _IndexPageState extends State<IndexPage> {
     
     //初始化Screenutil屏幕适配方案
     ScreenUtil.instance = ScreenUtil(width: 750, height: 1334)..init(context);
-    print(ScreenUtil.screenHeight);
-    print(ScreenUtil.screenWidth);
+    // print(ScreenUtil.screenHeight);
+    // print(ScreenUtil.screenWidth);
     return Scaffold(
       backgroundColor: Color.fromRGBO(244, 245, 245, 1),
       bottomNavigationBar: BottomNavigationBar(
@@ -64,7 +64,10 @@ class _IndexPageState extends State<IndexPage> {
           });
         },
       ),
-      body: tabBodies[currentIndex],
+      body: IndexedStack(
+        index: currentIndex,
+        children: tabBodies,
+      ),
     );
   }
 }

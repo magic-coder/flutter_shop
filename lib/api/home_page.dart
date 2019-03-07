@@ -2,9 +2,11 @@ import '../utils/ajax.dart';
 import 'dart:async';
 import '../config/service_url.dart';
 
-Future getHomePageContent() async {
-  const formData = {
-    'lon':'115.02932','lat':'35.76189'
-  };
-  return await Http.getInstance().post(servicePath['homePageContext'], data: formData);
+Future getHomePageContent(data) async {
+  return await Http.getInstance().post(servicePath['homePageContext'], data: data);
 }
+// 火爆专区
+Future getHomePageBelowConten(data) async {
+  return await Http.getInstance().post(servicePath['homePageBelowConten'], data: data);
+}
+
